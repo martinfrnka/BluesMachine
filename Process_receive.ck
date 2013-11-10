@@ -1,16 +1,16 @@
-// (launch with s.ck)
-
 // the patch
+//two unit generators with reverb effect 
 TriOsc s => JCRev r => dac;
 SinOsc t => r;
-.2 => s.gain;
-.2 => t.gain;
+.0 => s.gain;
+.0 => t.gain;
 .5 => r.mix;
 
 // create our OSC receiver
 OscRecv recv;
 // use port 6449 (or whatever)
 11000 => recv.port;
+
 // start listening (launch thread)
 recv.listen();
 
@@ -26,6 +26,8 @@ while( true )
     // grab the next message from the queue. 
     while( oe.nextMsg() )
     { 
+        .2 => s.gain;
+        .2 => t.gain;
         int i,j;
         float f;
 

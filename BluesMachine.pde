@@ -1,9 +1,8 @@
 
-/**
- * oscP5message by andreas schlegel
- * example shows how to create osc messages.
- * oscP5 website at http://www.sojamo.de/oscP5
- */
+/*
+ BluesMachine by Martin Frnka
+ Experimental musical interface combining ChucK and Processing
+*/
  
 import oscP5.*;
 import netP5.*;
@@ -20,16 +19,18 @@ int numCells = 24;
 int oldX = -1;
 int oldY = -1;
 int xIdx, yIdx;
-
+  
 int w = cellWidth * numCells;
 int h = cellHeight * numCells;
 
-int[] dorD = {50, 52, 53, 55, 57, 59, 60};
-int[] dorG = {55, 57, 58, 60, 62, 64, 65};
-int[][] dor = {
-  {50, 52, 53, 55, 57, 59, 60},
-  {48, 50, 52, 53, 55, 57, 59}
-};
+int keyC = 48;
+int keyD = 50;
+int keyF = 53;
+int keyG = 55;
+
+Blues bScale = new Blues(keyC);
+//Dorian dSc = new Dorian(keyG);
+
 
 int scale = 0;
 int speed = 200;
@@ -70,12 +71,6 @@ void sendMsg(int noteX, int noteY, float gain)
 
 int count =0;
 void draw() {
-  if (mousePressed && (mouseButton == LEFT)) {
-    scale = 0;
-  }
-  if (mousePressed && (mouseButton == RIGHT)) {
-    scale = 1;
-  }
   count++;
   background(0); 
   stroke(255);
@@ -110,12 +105,10 @@ void mousing() {
   xIdx = mouseX/cellWidth;
   yIdx = mouseY/cellHeight;
   
-  int noteX = ((xIdx / numTones) * 12) + dor[scale][(xIdx % numTones)]; 
-  int noteY = ((yIdx / numTones) * 12) + dor[scale][(yIdx % numTones)] +12; 
-   
+  int noteX, noteY;
+  noteX = bScale.getIthNote(xIdx); 
+  noteY = bScale.getIthNote(yIdx); 
   sendMsg(noteX, noteY, random(0.1,0.5));
-
-
 }
 
 
@@ -137,4 +130,36 @@ void mouseWheel(MouseEvent event) {
  if (speed>800) {
    speed = 800;
  }
+}
+
+void keyPressed() {
+  //when exitting (ESC key hit), mute the sound
+  if (key == ESC) {
+    sendMsg(0,0,0);
+  }
+  
+  switch (key) 
+  {
+    case ESC:
+      sendMsg(0,0,0);
+      break;
+    case 'c':
+      bScale.baseKey = keyC;
+      break;  
+    case 'C':
+      bScale.baseKey = keyC+12;
+      break;  
+    case 'f':
+      bScale.baseKey = keyF;
+      break;
+    case 'F':
+      bScale.baseKey = keyF+12;
+      break;
+    case 'g':
+      bScale.baseKey = keyG;
+      break;
+    case 'G':
+      bScale.baseKey = keyG+12;
+      break;
+  }
 }
