@@ -4,7 +4,7 @@ TriOsc s => JCRev r => dac;
 SinOsc t => r;
 .0 => s.gain;
 .0 => t.gain;
-.5 => r.mix;
+.3 => r.mix;
 
 // create our OSC receiver
 OscRecv recv;
